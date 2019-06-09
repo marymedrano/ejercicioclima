@@ -14,7 +14,7 @@
             android:id="@+id/text_view_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clima: " />
+            android:text="Ciudad: " />
 
         <EditText
             android:id="@+id/cityEditText"
@@ -23,7 +23,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="..." />
+            android:text="" />
 
         <Button
             android:id="@+id/weatherButton"

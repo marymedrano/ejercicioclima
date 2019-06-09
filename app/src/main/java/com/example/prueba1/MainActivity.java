@@ -29,65 +29,43 @@ public class MainActivity extends AppCompatActivity {
 
         //LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://api.openweathermap.org/data/2.5/weather?q=London&APPID=12198b9facea441be4dde6b524c94b97";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Gson gson = new GsonBuilder().create();
-
-                    // Define Response class to correspond to the JSON response returned
-                    WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
-                    weatherTextView.setText(weatherResponse.getName() + " -> " + weatherResponse.getMain().getTemp());
-                }
-            },
-            new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    weatherTextView.setText("That didn't work!");
-                }
-            }
-        );
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        getWeather("London", weatherTextView);
 
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Instantiate the RequestQueue.
-                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                String url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityEditText.getText() + "&APPID=12198b9facea441be4dde6b524c94b97";
-
-                // Request a string response from the provided URL.
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Gson gson = new GsonBuilder().create();
-
-                                // Define Response class to correspond to the JSON response returned
-                                WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
-                                weatherTextView.setText(weatherResponse.getName() + " -> " + weatherResponse.getMain().getTemp());
-                            }
-                        },
-                        new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                weatherTextView.setText("That didn't work!");
-                            }
-                        }
-                );
-
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest);
+                getWeather(cityEditText.getText().toString(), weatherTextView);
             }
         });
+    }
+
+    private void getWeather(final String city, final TextView weatherTextView) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=12198b9facea441be4dde6b524c94b97";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new GsonBuilder().create();
+
+                        // Define Response class to correspond to the JSON response returned
+                        WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
+                        weatherTextView.setText(weatherResponse.getName() + " -> " + weatherResponse.getMain().getTemp() / 10);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        weatherTextView.setText("That didn't work!");
+                    }
+                }
+        );
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 }
