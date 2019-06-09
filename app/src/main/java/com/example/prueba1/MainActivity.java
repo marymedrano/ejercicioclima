@@ -1,9 +1,10 @@
 package com.example.prueba1;
 
-import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -15,8 +16,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -24,191 +23,71 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView helloTextView = (TextView) findViewById(R.id.text_view_id);
+        final TextView weatherTextView = (TextView) findViewById(R.id.weatherText);
+        final EditText cityEditText = (EditText) findViewById(R.id.cityEditText);
+        final Button weatherButton = (Button) findViewById(R.id.weatherButton);
 
         //LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://api.openweathermap.org/data/2.5/forecast?id=524901&APPID=12198b9facea441be4dde6b524c94b97";
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=London&APPID=12198b9facea441be4dde6b524c94b97";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new GsonBuilder().create();
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Gson gson = new GsonBuilder().create();
 
-                        // Define Response class to correspond to the JSON response returned
-                        WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
-                        helloTextView.setText("Tiempo en: " + weatherResponse.getCity().getName() + " -> " + weatherResponse.getList().get(0).getMain().getTemp());
-                    }
-                },
-                new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        helloTextView.setText("That didn't work!");
-                    }
+                    // Define Response class to correspond to the JSON response returned
+                    WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
+                    weatherTextView.setText(weatherResponse.getName() + " -> " + weatherResponse.getMain().getTemp());
                 }
+            },
+            new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    weatherTextView.setText("That didn't work!");
+                }
+            }
         );
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-    }
 
-    class WeatherResponse {
-        private int cod;
+        weatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Instantiate the RequestQueue.
+                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                String url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityEditText.getText() + "&APPID=12198b9facea441be4dde6b524c94b97";
 
-        private String message;
+                // Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Gson gson = new GsonBuilder().create();
 
-        private int cnt;
+                                // Define Response class to correspond to the JSON response returned
+                                WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
+                                weatherTextView.setText(weatherResponse.getName() + " -> " + weatherResponse.getMain().getTemp());
+                            }
+                        },
+                        new Response.ErrorListener() {
 
-        private Location city;
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                weatherTextView.setText("That didn't work!");
+                            }
+                        }
+                );
 
-        private List<Value> list;
-
-        public WeatherResponse() {
-        }
-
-        public int getCod() {
-            return cod;
-        }
-
-        public void setCod(int cod) {
-            this.cod = cod;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public int getCnt() {
-            return cnt;
-        }
-
-        public void setCnt(int cnt) {
-            this.cnt = cnt;
-        }
-
-        public Location getCity() {
-            return city;
-        }
-
-        public void setCity(Location city) {
-            this.city = city;
-        }
-
-        public List<Value> getList() {
-            return list;
-        }
-
-        public void setList(List<Value> list) {
-            this.list = list;
-        }
-    }
-
-    class Location {
-        private int id;
-
-        private String name;
-
-        private Coord coord;
-
-        private String country;
-
-        public Location() {
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Coord getCoord() {
-            return coord;
-        }
-
-        public void setCoord(Coord coord) {
-            this.coord = coord;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public void setCountry(String country) {
-            this.country = country;
-        }
-    }
-
-    class Coord {
-        private float lat;
-
-        private float lon;
-
-        public Coord() {
-        }
-
-        public float getLat() {
-            return lat;
-        }
-
-        public void setLat(float lat) {
-            this.lat = lat;
-        }
-
-        public float getLon() {
-            return lon;
-        }
-
-        public void setLon(float lon) {
-            this.lon = lon;
-        }
-    }
-
-    class Value {
-        private Weather main;
-
-        public Value() {
-        }
-
-        public Weather getMain() {
-            return main;
-        }
-
-        public void setMain(Weather main) {
-            this.main = main;
-        }
-    }
-
-    class Weather {
-        private float temp;
-
-        public Weather() {
-        }
-
-        public float getTemp() {
-            return temp;
-        }
-
-        public void setTemp(float temp) {
-            this.temp = temp;
-        }
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
+            }
+        });
     }
 }
