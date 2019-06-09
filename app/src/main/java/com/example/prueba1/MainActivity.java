@@ -15,6 +15,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // Define Response class to correspond to the JSON response returned
                         WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
-                        helloTextView.setText("Tiempo en: " + weatherResponse.getCity().getName() + " -> " + weatherResponse.getMessage());
+                        helloTextView.setText("Tiempo en: " + weatherResponse.getCity().getName() + " -> " + weatherResponse.getList().get(0).getMain().getTemp());
                     }
                 },
                 new Response.ErrorListener() {
@@ -57,9 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
     class WeatherResponse {
         private int cod;
+
         private String message;
+
         private int cnt;
+
         private Location city;
+
+        private List<Value> list;
 
         public WeatherResponse() {
         }
@@ -94,6 +101,14 @@ public class MainActivity extends AppCompatActivity {
 
         public void setCity(Location city) {
             this.city = city;
+        }
+
+        public List<Value> getList() {
+            return list;
+        }
+
+        public void setList(List<Value> list) {
+            this.list = list;
         }
     }
 
@@ -164,6 +179,36 @@ public class MainActivity extends AppCompatActivity {
 
         public void setLon(float lon) {
             this.lon = lon;
+        }
+    }
+
+    class Value {
+        private Weather main;
+
+        public Value() {
+        }
+
+        public Weather getMain() {
+            return main;
+        }
+
+        public void setMain(Weather main) {
+            this.main = main;
+        }
+    }
+
+    class Weather {
+        private float temp;
+
+        public Weather() {
+        }
+
+        public float getTemp() {
+            return temp;
+        }
+
+        public void setTemp(float temp) {
+            this.temp = temp;
         }
     }
 }
