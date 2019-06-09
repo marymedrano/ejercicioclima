@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // Define Response class to correspond to the JSON response returned
                         WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
-                        helloTextView.setText("Response is: " + weatherResponse.getMessage());
+                        helloTextView.setText("Tiempo en: " + weatherResponse.getCity().getName() + " -> " + weatherResponse.getMessage());
                     }
                 },
                 new Response.ErrorListener() {
