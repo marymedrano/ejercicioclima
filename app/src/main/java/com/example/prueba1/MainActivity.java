@@ -22,13 +22,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView helloTextView = (TextView) findViewById(R.id.text);
+        final TextView helloTextView = (TextView) findViewById(R.id.text_view_id);
 
         //LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://api.openweathermap.org/data/2.5/forecast?id=524901&APPID=12198b9facea441be4dde6b524c94b97";
+        String url = "https://api.openweathermap.org/data/2.5/forecast?id=524901&APPID=12198b9facea441be4dde6b524c94b97";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -41,13 +41,15 @@ public class MainActivity extends AppCompatActivity {
                         WeatherResponse weatherResponse = gson.fromJson(response, WeatherResponse.class);
                         helloTextView.setText("Response is: " + weatherResponse.getMessage());
                     }
-                }, new Response.ErrorListener() {
+                },
+                new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                helloTextView.setText("That didn't work!");
-            }
-        });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        helloTextView.setText("That didn't work!");
+                    }
+                }
+        );
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
@@ -141,26 +143,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class Coord {
-        private long lat;
+        private float lat;
 
-        private long lon;
+        private float lon;
 
         public Coord() {
         }
 
-        public long getLat() {
+        public float getLat() {
             return lat;
         }
 
-        public void setLat(long lat) {
+        public void setLat(float lat) {
             this.lat = lat;
         }
 
-        public long getLon() {
+        public float getLon() {
             return lon;
         }
 
-        public void setLon(long lon) {
+        public void setLon(float lon) {
             this.lon = lon;
         }
     }
